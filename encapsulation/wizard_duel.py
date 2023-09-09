@@ -1,23 +1,14 @@
-class Wizard:
-    def __init__(self, name):
-        self.name = name
-        self.__health = 65
-        self.__mana = 45
-
-    def get_mana(self):
-        return self.__mana
-
-    def get_health(self):
-        return self.__health
-
-    def get_fireballed(self):
-        self.__health -= 30
-        print(f"{self.name} is hit")
-        if self.__health <= 0: print(f"{self.name} is dead")
-
-    def drink_mana_potion(self):
-        print(f"{self.name} drinks a potion")
-        self.__mana += 40
+class Wizard:    
+    def cast_fireball(self, target):
+        # cast fireball cost 30 mana
+        # If the wizard doesn't have enough mana, raise the exception {} cannot cast fireball
+        if self.__mana < 20:
+            raise Exception(f"{self.name} cannot cast fireball")
+        
+        # Otherwise, {1} casts fireball at {2} where {1} is the caster's     name and {2} is the target's name, then make sure the target is "fireballed"
+        self.__mana -= 20
+        print(f"{self.name} casts fireball at {target.name}")
+        target.get_fireballed()
 
     # don't touch below this line
 
@@ -32,20 +23,32 @@ class Wizard:
     def get_health(self):
         return self.__health
 
+    def get_fireballed(self):
+        fireball_damage = 30
+        self.__health -= fireball_damage
+        print(f"{self.name} is hit by a fireball")
+        if self.__health <= 0:
+            print(f"{self.name} is dead")
+
+    def drink_mana_potion(self):
+        print(f"{self.name} drinks a mana potion")
+        self.__mana += 40
+
 
 def main():
     merlin = Wizard("Merlin")
-    print_status(merlin)
-    merlin.drink_mana_potion()
-    print_status(merlin)
-
     madame_mim = Wizard("Madame Mim")
-    print_status(madame_mim)
-    madame_mim.get_fireballed()
-    print_status(madame_mim)
-    madame_mim.get_fireballed()
-    print_status(madame_mim)
-    madame_mim.get_fireballed()
+
+    while madame_mim.get_health() > 0:
+        if merlin.get_mana() < 10:
+            merlin.drink_mana_potion()
+
+        try:
+            print_status(merlin)
+            print_status(madame_mim)
+            merlin.cast_fireball(madame_mim)
+        except Exception as e:
+            print(e)
 
 
 def print_status(wizard):
